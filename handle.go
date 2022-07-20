@@ -36,9 +36,6 @@ func reload(listener net.Listener) {
 	cmd.Stderr = os.Stderr
 	// put socket FD at the first entry
 	cmd.ExtraFiles = []*os.File{f}
-	if logFile != nil {
-		cmd.ExtraFiles = append(cmd.ExtraFiles, logFile)
-	}
 	err = cmd.Start()
 	if err != nil {
 		logger.Println(err)
@@ -51,9 +48,6 @@ func reload(listener net.Listener) {
 }
 
 func serverQuit(server *http.Server) {
-	if logFile != nil {
-		defer logFile.Close()
-	}
 	ctx, cancel := context.WithTimeout(context.Background(), TimeOut)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
